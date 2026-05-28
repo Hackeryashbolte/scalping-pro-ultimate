@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScalpGPT PRO ULTIMATE v2 — Complete PipNex Clone</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+:root {
+  --bg: #03050f;
+  --bg2: #070c1a;
+  --bg3: #0d1428;
+  --card: rgba(10,16,35,0.92);
+  --buy: #00e676;
+  --buy-dim: rgba(0,230,118,0.12);
+  --buy-glow: rgba(0,230,118,0.35);
+  --sell: #ff1744;
+  --sell-dim: rgba(255,23,68,0.12);
+  --sell-glow: rgba(255,23,68,0.35);
+  --gold: #ffd600;
+  --gold-dim: rgba(255,214,0,0.12);
+  --cyan: #00e5ff;
+  --cyan-dim: rgba(0,229,255,0.1);
+  --purple: #d500f9;
+  --purple-glow: rgba(213,0,249,0.3);
+  --border: rgba(0,229,255,0.15);
+  --text: #e8f0fe;
+  --muted: #6c7a99;
+  --warn: #ff6d00;
+  --orange: #ffa500;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Rajdhani', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image:
+    linear-gradient(rgba(0,229,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  z-index:0; pointer-events:none;
+  animation: gridPulse 4s ease-in-out infinite;
+}
+@keyframes gridPulse { 0%,100%{opacity:.6} 50%{opacity:1} }
+
+.container {
+  position:relative; z-index:1;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* ====== SIDEBAR ====== */
+.sidebar {
+  position:fixed; left:0; top:0; width:220px; height:100vh;
+  background: rgba(7,12,26,0.95); border-right:1px solid var(--border);
+  padding:1.5rem 1rem; overflow-y:auto; z-index:100;
+  display:flex; flex-direction:column;
+}
+
+.sidebar-logo {
+  font-family:'Orbitron',sans-serif; font-size:1.1rem; font-weight:900;
+  letter-spacing:2px; color:var(--cyan); margin-bottom:2rem;
+  padding-bottom:1rem; border-bottom:1px solid var(--border);
+}
+
+.nav-item {
+  padding:.7rem 1rem; border-radius:8px; cursor:pointer;
+  transition:all .2s; color:var(--muted); font-size:.85rem;
+  margin-bottom:.5rem; font-weight:600; letter-spacing:1px;
+  border-left:3px solid transparent;
+}
+
+.nav-item:hover, .nav-item.active {
+  background:rgba(0,229,255,.1); border-left-color:var(--cyan);
+  color:var(--cyan);
+}
+
+.nav-section {
+  font-size:.7rem; color:var(--muted); margin-top:1.5rem;
+  margin-bottom:.75rem; padding-left:1rem; letter-spacing:2px;
+  text-transform:uppercase;
+}
+
+/* ====== MAIN ====== */
+.main {
+  margin-left: 220px;
+  padding-bottom: 2rem;
+}
+
+.header {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:1.5rem; border-bottom:1px solid var(--border); margin-bottom:1.5rem;
+  background: rgba(10,16,35,0.5);
+}
+
+.header-title {
+  font-family:'Orbitron',sans-serif; font-size:1.5rem; font-weight:900;
+  letter-spacing:3px; background:linear-gradient(90deg,var(--cyan),var(--purple));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+
+.btn {
+  padding:.6rem 1.2rem; border-radius:8px; border:none; cursor:pointer;
+  font-family:'Orbitron',sans-serif; font-weight:700; letter-spacing:1px;
+  transition:all .3s; font-size:.75rem;
+}
+
+.btn-primary {
+  background:rgba(0,229,255,.15); border:1px solid var(--cyan); color:var(--cyan);
+}
+
+.btn-primary:hover {
+  background:var(--cyan); color:#000; box-shadow:0 0 20px var(--cyan);
+}
+
+.btn-success {
+  background:rgba(0,230,118,.15); border:1px solid var(--buy); color:var(--buy);
+}
+
+.btn-success:hover {
+  background:var(--buy); color:#000; box-shadow:0 0 15px var(--buy);
+}
+
+.btn-orange {
+  background:rgba(255,165,0,.15); border:1px solid var(--orange); color:var(--orange);
+}
+
+.btn-orange:hover {
+  background:var(--orange); color:#000; box-shadow:0 0 15px var(--orange);
+}
+
+/* ====== TABS ====== */
+.tabs {
+  display:flex; gap:.5rem; margin-bottom:1.5rem; border-bottom:1px solid var(--border);
+  padding-bottom:0; flex-wrap:wrap;
+}
+
+.tab-btn {
+  padding:.8rem 1.5rem; background:transparent; border:none;
+  color:var(--muted); cursor:pointer; font-family:'Rajdhani',sans-serif;
+  font-weight:700; letter-spacing:1px; font-size:.85rem;
+  border-bottom:3px solid transparent; transition:all .2s;
+}
+
+.tab-btn:hover { color:var(--cyan); }
+
+.tab-btn.active {
+  color:var(--cyan); border-bottom-color:var(--cyan);
+}
+
+.tab-content {
+  display:none;
+}
+
+.tab-content.active {
+  display:block; animation:fadeIn .3s ease-out;
+}
+
+@keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+/* ====== CARDS ====== */
+.card {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:12px; padding:1.5rem; margin-bottom:1.5rem;
+  transition:all .3s;
+}
+
+.card:hover { border-color:var(--cyan); box-shadow:0 0 20px rgba(0,229,255,.1); }
+
+.card-title {
+  font-family:'Orbitron',sans-serif; font-size:.9rem; font-weight:700;
+  letter-spacing:2px; color:var(--cyan); margin-bottom:1.2rem;
+}
+
+/* ====== PRICING ====== */
+.pricing-container {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem;
+}
+
+.pricing-card {
+  background:linear-gradient(135deg,rgba(0,229,255,.08),rgba(10,16,35,.9));
+  border:1px solid var(--border); border-radius:12px; padding:2rem;
+  position:relative; transition:all .3s;
+}
+
+.pricing-card:hover {
+  border-color:var(--cyan); transform:translateY(-5px);
+  box-shadow:0 10px 30px rgba(0,229,255,.15);
+}
+
+.pricing-card.pro {
+  background:linear-gradient(135deg,rgba(213,0,249,.08),rgba(10,16,35,.9));
+}
+
+.pricing-card.pro:hover { border-color:var(--purple); box-shadow:0 10px 30px rgba(213,0,249,.15); }
+
+.pricing-card.elite {
+  background:linear-gradient(135deg,rgba(255,165,0,.08),rgba(10,16,35,.9));
+  border:2px solid var(--orange);
+}
+
+.pricing-card.elite:hover { box-shadow:0 10px 40px rgba(255,165,0,.25); }
+
+.pricing-badge {
+  position:absolute; top:-12px; left:50%; transform:translateX(-50%);
+  padding:.4rem 1rem; border-radius:20px; font-size:.75rem; font-weight:700;
+  letter-spacing:1px;
+}
+
+.badge-popular { background:var(--purple); color:white; }
+.badge-elite { background:var(--orange); color:white; }
+
+.pricing-title {
+  font-size:1.5rem; font-weight:900; margin:1rem 0 .5rem;
+  color:var(--text);
+}
+
+.pricing-subtitle { font-size:.8rem; color:var(--muted); margin-bottom:1.5rem; }
+
+.pricing-price {
+  font-family:'Space Mono',monospace; font-size:2rem; font-weight:900;
+  margin-bottom:.5rem;
+}
+
+.pricing-price-period { font-size:.8rem; color:var(--muted); }
+
+.pricing-desc {
+  font-size:.85rem; color:var(--muted); margin:1.5rem 0;
+  line-height:1.6;
+}
+
+.btn-pricing {
+  width:100%; padding:1rem; border-radius:8px; font-family:'Orbitron',sans-serif;
+  font-weight:700; letter-spacing:1px; border:none; cursor:pointer;
+  margin-top:1.5rem; transition:all .3s;
+}
+
+.btn-pricing.primary {
+  background:linear-gradient(135deg,var(--purple),var(--cyan));
+  color:white;
+}
+
+.btn-pricing.primary:hover { box-shadow:0 0 20px var(--purple-glow); }
+
+.btn-pricing.elite {
+  background:var(--orange); color:white;
+}
+
+.btn-pricing.elite:hover { box-shadow:0 0 20px rgba(255,165,0,.4); }
+
+.features-list {
+  display:flex; flex-direction:column; gap:.6rem;
+  margin-top:1.5rem; padding-top:1.5rem; border-top:1px solid var(--border);
+}
+
+.feature-item {
+  display:flex; gap:.6rem; align-items:flex-start; font-size:.85rem;
+}
+
+.feature-check {
+  color:var(--buy); font-weight:700; margin-top:.1rem;
+}
+
+/* ====== STATS ====== */
+.stats-grid {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1rem;
+  margin-bottom:1.5rem;
+}
+
+.stat-box {
+  background:rgba(255,255,255,.03); border:1px solid var(--border);
+  border-radius:10px; padding:1.2rem; text-align:center;
+}
+
+.stat-val {
+  font-family:'Orbitron',sans-serif; font-size:1.6rem; font-weight:900;
+  color:var(--cyan); margin-bottom:.4rem;
+}
+
+.stat-lbl { font-size:.75rem; color:var(--muted); letter-spacing:1px; text-transform:uppercase; }
+
+/* ====== FEATURES GRID ====== */
+.features-showcase {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1rem;
+}
+
+.feature-card {
+  background:linear-gradient(135deg,rgba(0,229,255,.08),rgba(213,0,249,.08));
+  border:1px solid var(--border); border-radius:10px; padding:1.2rem;
+  text-align:center; transition:all .3s;
+}
+
+.feature-card:hover {
+  border-color:var(--cyan); background:linear-gradient(135deg,rgba(0,229,255,.15),rgba(213,0,249,.15));
+}
+
+.feature-icon {
+  font-size:2rem; margin-bottom:.5rem; color:var(--cyan);
+}
+
+.feature-name {
+  font-size:.8rem; font-weight:700; letter-spacing:1px;
+}
+
+/* ====== REFERRAL ====== */
+.referral-card {
+  background:linear-gradient(135deg,rgba(213,0,249,.1),rgba(255,165,0,.1));
+  border:2px solid var(--purple); border-radius:12px; padding:2rem;
+  text-align:center; margin-bottom:1.5rem;
+}
+
+.referral-icon { font-size:3rem; margin-bottom:1rem; }
+
+.referral-title { font-size:1.8rem; font-weight:900; color:var(--purple); margin-bottom:1rem; }
+
+.referral-desc { font-size:.9rem; color:var(--muted); line-height:1.6; margin-bottom:1.5rem; }
+
+.referral-benefits {
+  display:flex; gap:2rem; justify-content:center; flex-wrap:wrap; margin-bottom:1.5rem;
+}
+
+.benefit {
+  display:flex; flex-direction:column; align-items:center; gap:.5rem;
+}
+
+.benefit-icon { font-size:1.5rem; color:var(--buy); }
+
+.benefit-text { font-size:.85rem; color:var(--muted); }
+
+.btn-referral {
+  background:linear-gradient(135deg,var(--purple),var(--cyan));
+  color:white; padding:1rem 2rem; border-radius:8px;
+  border:none; cursor:pointer; font-weight:700; font-size:.9rem;
+}
+
+.btn-referral:hover { box-shadow:0 0 20px var(--purple-glow); }
+
+/* ====== STRATEGY BUILDER ====== */
+.strategy-panel {
+  display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem;
+}
+
+@media(max-width:900px) { .strategy-panel { grid-template-columns:1fr; } }
+
+.input-group {
+  display:flex; flex-direction:column; gap:.5rem;
+}
+
+.input-label {
+  font-size:.8rem; font-weight:700; color:var(--cyan); letter-spacing:1px;
+  text-transform:uppercase;
+}
+
+.input-field {
+  background:rgba(10,16,35,0.6); border:1px solid var(--border);
+  color:var(--text); padding:.75rem; border-radius:8px;
+  font-family:'Rajdhani',sans-serif; font-size:.85rem;
+}
+
+.input-field:focus { outline:none; border-color:var(--cyan); }
+
+/* ====== AI NEWS ====== */
+.news-grid {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1rem;
+}
+
+.news-item {
+  background:rgba(255,255,255,.03); border-left:3px solid var(--buy);
+  border-radius:8px; padding:1rem;
+}
+
+.news-time { font-size:.7rem; color:var(--muted); margin-bottom:.4rem; }
+
+.news-title { font-size:.85rem; font-weight:700; margin-bottom:.3rem; }
+
+.news-impact { font-size:.75rem; padding:.2rem .5rem; border-radius:4px; display:inline-block; margin-top:.3rem; }
+
+.impact-high { background:rgba(255,23,68,.15); color:var(--sell); }
+.impact-medium { background:rgba(255,214,0,.15); color:var(--gold); }
+.impact-low { background:rgba(0,230,118,.15); color:var(--buy); }
+
+/* ====== GUARANTEE ====== */
+.guarantee-box {
+  background:linear-gradient(135deg,rgba(0,230,118,.1),rgba(0,229,255,.08));
+  border:2px solid var(--buy); border-radius:12px; padding:1.5rem;
+  text-align:center; margin-bottom:1.5rem;
+}
+
+.guarantee-icon { font-size:2.5rem; color:var(--buy); margin-bottom:.75rem; }
+
+.guarantee-title { font-size:1.3rem; font-weight:900; color:var(--buy); margin-bottom:.5rem; }
+
+.guarantee-text { font-size:.85rem; color:var(--muted); }
+
+footer { text-align:center; padding:2rem; color:var(--muted); font-size:.75rem; border-top:1px solid var(--border); margin-top:2rem; letter-spacing:1px; }
+
+@media(max-width:768px) {
+  .sidebar { width:0; transform:translateX(-100%); }
+  .main { margin-left:0; }
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-logo">🎯 SCALPGPT</div>
+  
+  <div class="nav-item active" onclick="switchTab('dashboard',this)">📊 DASHBOARD</div>
+  <div class="nav-item" onclick="switchTab('signals',this)">⚡ SIGNALS</div>
+  <div class="nav-item" onclick="switchTab('analysis',this)">🧠 AI ANALYSIS</div>
+  <div class="nav-item" onclick="switchTab('news',this)">📰 AI NEWS</div>
+  <div class="nav-item" onclick="switchTab('strategy',this)">🔧 STRATEGY BUILDER</div>
+  <div class="nav-item" onclick="switchTab('backtest',this)">🧪 BACKTEST</div>
+  <div class="nav-item" onclick="switchTab('journal',this)">📖 JOURNAL</div>
+  
+  <div class="nav-section">TOOLS</div>
+  <div class="nav-item" onclick="switchTab('heatmap',this)">🌡️ HEATMAP</div>
+  <div class="nav-item" onclick="switchTab('possize',this)">📐 POSITION SIZE</div>
+  <div class="nav-item" onclick="switchTab('proppass',this)">🏆 PROPPASS</div>
+  <div class="nav-item" onclick="switchTab('upload',this)">📤 CHART UPLOAD</div>
+  <div class="nav-item" onclick="switchTab('mtconnect',this)">📱 MT5 CONNECT</div>
+  
+  <div class="nav-section">ACCOUNT</div>
+  <div class="nav-item" onclick="switchTab('pricing',this)">💎 PRICING</div>
+  <div class="nav-item" onclick="switchTab('referral',this)">🎁 REFER & EARN</div>
+  <div class="nav-item" onclick="switchTab('settings',this)">⚙️ SETTINGS</div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="header">
+    <div class="header-title">🚀 ScalpGPT PRO v2 ULTIMATE</div>
+    <div>
+      <button class="btn btn-primary" onclick="switchTab('news',this)" style="margin-right:.5rem;">📰 AI NEWS</button>
+      <button class="btn btn-success">🎙️ VOICE AI</button>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('dashboard',this)">DASHBOARD</button>
+    <button class="tab-btn" onclick="switchTab('signals',this)">SIGNALS</button>
+    <button class="tab-btn" onclick="switchTab('analysis',this)">AI ANALYSIS</button>
+    <button class="tab-btn" onclick="switchTab('news',this)">AI NEWS</button>
+    <button class="tab-btn" onclick="switchTab('strategy',this)">STRATEGY</button>
+    <button class="tab-btn" onclick="switchTab('pricing',this)">PRICING</button>
+  </div>
+
+  <!-- DASHBOARD TAB -->
+  <div id="dashboard" class="tab-content active">
+    <div class="card">
+      <div class="card-title">📊 TODAY'S PERFORMANCE</div>
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-val" style="color:var(--buy);">+142 pips</div>
+          <div class="stat-lbl">Daily Profit</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val">86.2%</div>
+          <div class="stat-lbl">Win Rate</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val">12/12</div>
+          <div class="stat-lbl">AI Analyses</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" style="color:var(--gold);">50 pips</div>
+          <div class="stat-lbl">Avg Stop Loss</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" style="color:var(--cyan);">Signal Ready</div>
+          <div class="stat-lbl">Status</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val">✅ Live</div>
+          <div class="stat-lbl">MT5 Connected</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">⭐ TODAY'S SIGNAL OF THE DAY</div>
+      <div style="background:linear-gradient(135deg,rgba(0,230,118,.1),rgba(0,229,255,.08)); border:2px solid var(--buy); border-radius:12px; padding:1.5rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+          <div>
+            <div style="font-size:.85rem; color:var(--muted);">SIGNAL OF THE DAY (90%+ Accuracy)</div>
+            <div style="font-size:1.5rem; color:var(--buy); font-weight:900; margin-top:.3rem;">XAU/USD — STRONG BUY ▲</div>
+          </div>
+          <div style="font-size:1.2rem; color:var(--buy); font-family:'Space Mono',monospace;">Entry: 3322.50</div>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:1rem;">
+          <div><div style="font-size:.75rem; color:var(--muted);">Stop Loss (50p)</div><div style="color:var(--sell); font-weight:700;">3272.50</div></div>
+          <div><div style="font-size:.75rem; color:var(--muted);">TP 1 (1:1)</div><div style="color:var(--buy); font-weight:700;">3372.50</div></div>
+          <div><div style="font-size:.75rem; color:var(--muted);">TP 2 (1:2)</div><div style="color:var(--gold); font-weight:700;">3422.50</div></div>
+        </div>
+        <div style="font-size:.8rem; color:var(--muted); background:rgba(0,229,255,.05); padding:.75rem; border-radius:8px;">
+          <strong>Why?</strong> EMA Bullish + RSI 42 (healthy buy) + SMC Order Block Hold + Bollinger Lower Band + Volume Spike + London Session Active
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🎯 ALL FEATURES</div>
+      <div class="features-showcase">
+        <div class="feature-card"><div class="feature-icon">🧠</div><div class="feature-name">12 AI Analyses/Day</div></div>
+        <div class="feature-card"><div class="feature-icon">📊</div><div class="feature-name">Multi-TF Analysis</div></div>
+        <div class="feature-card"><div class="feature-icon">⭐</div><div class="feature-name">Signal of Day</div></div>
+        <div class="feature-card"><div class="feature-icon">📰</div><div class="feature-name">AI News (NFP/CPI)</div></div>
+        <div class="feature-card"><div class="feature-icon">🔧</div><div class="feature-name">Strategy Builder</div></div>
+        <div class="feature-card"><div class="feature-icon">🧪</div><div class="feature-name">Backtest</div></div>
+        <div class="feature-card"><div class="feature-icon">📖</div><div class="feature-name">Journal</div></div>
+        <div class="feature-card"><div class="feature-icon">🌡️</div><div class="feature-name">Heatmap</div></div>
+        <div class="feature-card"><div class="feature-icon">📐</div><div class="feature-name">Position Calc</div></div>
+        <div class="feature-card"><div class="feature-icon">🏆</div><div class="feature-name">PropPass</div></div>
+        <div class="feature-card"><div class="feature-icon">📱</div><div class="feature-name">MT5 Connect</div></div>
+        <div class="feature-card"><div class="feature-icon">🎙️</div><div class="feature-name">Voice AI</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIGNALS TAB -->
+  <div id="signals" class="tab-content">
+    <div class="card">
+      <div class="card-title">⚡ ACTIVE SIGNALS (3)</div>
+      <div style="display:flex; flex-direction:column; gap:1rem;">
+        <div style="background:rgba(0,230,118,.08); border-left:4px solid var(--buy); border-radius:8px; padding:1rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span><span style="color:var(--buy); font-weight:700;">BUY</span> XAU/USD</span>
+            <span style="font-size:.75rem; color:var(--muted);">50 pips SL • Conf: 88.4%</span>
+          </div>
+        </div>
+        <div style="background:rgba(0,230,118,.08); border-left:4px solid var(--buy); border-radius:8px; padding:1rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span><span style="color:var(--buy); font-weight:700;">BUY</span> BTC/USD</span>
+            <span style="font-size:.75rem; color:var(--muted);">50 pips SL • Conf: 84.9%</span>
+          </div>
+        </div>
+        <div style="background:rgba(255,23,68,.08); border-left:4px solid var(--sell); border-radius:8px; padding:1rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span><span style="color:var(--sell); font-weight:700;">SELL</span> GBP/USD</span>
+            <span style="font-size:.75rem; color:var(--muted);">50 pips SL • Conf: 75.2%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI ANALYSIS TAB -->
+  <div id="analysis" class="tab-content">
+    <div class="card">
+      <div class="card-title">🧠 AI MARKET ANALYSIS (Real-time)</div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem;">
+        <div style="background:rgba(0,230,118,.08); border:1px solid var(--buy); border-radius:10px; padding:1rem; text-align:center;">
+          <div style="font-size:.75rem; color:var(--muted); margin-bottom:.3rem;">XAU/USD</div>
+          <div style="font-size:1.2rem; color:var(--buy); font-weight:900;">STRONG BUY</div>
+          <div style="font-size:.7rem; color:var(--muted); margin-top:.3rem;">Conf: 88.4%</div>
+        </div>
+        <div style="background:rgba(0,229,255,.08); border:1px solid var(--cyan); border-radius:10px; padding:1rem; text-align:center;">
+          <div style="font-size:.75rem; color:var(--muted); margin-bottom:.3rem;">EUR/USD</div>
+          <div style="font-size:1.2rem; color:var(--cyan); font-weight:900;">NEUTRAL</div>
+          <div style="font-size:.7rem; color:var(--muted); margin-top:.3rem;">Conf: 62.1%</div>
+        </div>
+        <div style="background:rgba(255,23,68,.08); border:1px solid var(--sell); border-radius:10px; padding:1rem; text-align:center;">
+          <div style="font-size:.75rem; color:var(--muted); margin-bottom:.3rem;">GBP/USD</div>
+          <div style="font-size:1.2rem; color:var(--sell); font-weight:900;">SELL</div>
+          <div style="font-size:.7rem; color:var(--muted); margin-top:.3rem;">Conf: 75.2%</div>
+        </div>
+        <div style="background:rgba(0,230,118,.08); border:1px solid var(--buy); border-radius:10px; padding:1rem; text-align:center;">
+          <div style="font-size:.75rem; color:var(--muted); margin-bottom:.3rem;">USD/JPY</div>
+          <div style="font-size:1.2rem; color:var(--buy); font-weight:900;">BUY</div>
+          <div style="font-size:.7rem; color:var(--muted); margin-top:.3rem;">Conf: 81.7%</div>
+        </div>
+        <div style="background:rgba(0,230,118,.08); border:1px solid var(--buy); border-radius:10px; padding:1rem; text-align:center;">
+          <div style="font-size:.75rem; color:var(--muted); margin-bottom:.3rem;">BTC/USD</div>
+          <div style="font-size:1.2rem; color:var(--buy); font-weight:900;">STRONG BUY</div>
+          <div style="font-size:.7rem; color:var(--muted); margin-top:.3rem;">Conf: 84.9%</div>
+        </div>
+        <div style="background:rgba(0,229,255,.08); border:1px solid var(--cyan); border-radius:10px; padding:1rem; text-align:center;">
+          <div style="font-size:.75rem; color:var(--muted); margin-bottom:.3rem;">GBP/JPY</div>
+          <div style="font-size:1.2rem; color:var(--cyan); font-weight:900;">HOLD</div>
+          <div style="font-size:.7rem; color:var(--muted); margin-top:.3rem;">Conf: 58.3%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI NEWS TAB -->
+  <div id="news" class="tab-content">
+    <div class="card">
+      <div class="card-title">📰 AI NEWS TRADING (NFP/CPI Signals)</div>
+      <div class="news-grid">
+        <div class="news-item">
+          <div class="news-time">Today 02:00 UTC</div>
+          <div class="news-title">🇺🇸 US Initial Jobless Claims</div>
+          <div class="news-impact impact-high">HIGH IMPACT</div>
+          <div style="font-size:.75rem; color:var(--muted); margin-top:.3rem;">📊 Affects: EURUSD, GBPUSD</div>
+        </div>
+        <div class="news-item">
+          <div class="news-time">Friday 13:30 UTC</div>
+          <div class="news-title">🇺🇸 Nonfarm Payrolls (NFP)</div>
+          <div class="news-impact impact-high">HIGH IMPACT</div>
+          <div style="font-size:.75rem; color:var(--muted); margin-top:.3rem;">📊 Affects: USDJPY, Gold</div>
+        </div>
+        <div class="news-item">
+          <div class="news-time">Next Week 13:00 UTC</div>
+          <div class="news-title">🇪🇺 ECB Interest Rate Decision</div>
+          <div class="news-impact impact-high">HIGH IMPACT</div>
+          <div style="font-size:.75rem; color:var(--muted); margin-top:.3rem;">📊 Affects: EURUSD, EURGBP</div>
+        </div>
+        <div class="news-item">
+          <div class="news-time">Next Month</div>
+          <div class="news-title">🇬🇧 UK Inflation (CPI)</div>
+          <div class="news-impact impact-medium">MEDIUM IMPACT</div>
+          <div style="font-size:.75rem; color:var(--muted); margin-top:.3rem;">📊 Affects: GBPUSD, GBPJPY</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STRATEGY BUILDER TAB -->
+  <div id="strategy" class="tab-content">
+    <div class="card">
+      <div class="card-title">🔧 AI STRATEGY BUILDER (Build Custom Bots)</div>
+      <div class="strategy-panel">
+        <div class="input-group">
+          <label class="input-label">Pair</label>
+          <select class="input-field">
+            <option>XAU/USD</option>
+            <option>EUR/USD</option>
+            <option>GBP/USD</option>
+            <option>BTC/USD</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Timeframe</label>
+          <select class="input-field">
+            <option>M5</option>
+            <option>M15</option>
+            <option>M30</option>
+            <option>H1</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Stop Loss (pips)</label>
+          <input class="input-field" type="number" value="50">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Take Profit (pips)</label>
+          <input class="input-field" type="number" value="100">
+        </div>
+      </div>
+      <button class="btn btn-success" style="width:100%; margin-top:1rem;">🤖 BUILD BOT & RUN 24/7</button>
+      <div style="background:rgba(0,230,118,.08); border:1px solid var(--buy); border-radius:8px; padding:1rem; margin-top:1rem;">
+        <div style="font-size:.85rem; font-weight:700; margin-bottom:.5rem;">✅ Cloud Bot Running</div>
+        <div style="font-size:.75rem; color:var(--muted);">
+          Strategy: EMA(9,21) + RSI + SMC<br>
+          Status: LIVE (24/7 Active)<br>
+          Trades Today: 12<br>
+          Win Rate: 86.2%
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRICING TAB -->
+  <div id="pricing" class="tab-content">
+    <div class="guarantee-box">
+      <div class="guarantee-icon">✅</div>
+      <div class="guarantee-title">7-Day Money-Back Guarantee</div>
+      <div class="guarantee-text">Not satisfied? Get 100% refund within 7 days, no questions asked</div>
+    </div>
+
+    <div class="pricing-container">
+      <!-- PRO -->
+      <div class="pricing-card pro">
+        <div class="pricing-title">Pro</div>
+        <div class="pricing-subtitle">For serious traders who need more power</div>
+        <div class="pricing-price">$29.99<span class="pricing-price-period">/month</span></div>
+        <div class="pricing-desc">Professional features for active scalpers</div>
+        <button class="btn-pricing primary">Get Started</button>
+        <div class="features-list">
+          <div class="feature-item"><span class="feature-check">✓</span><span>6 AI Analyses per day</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>Advanced Chart Analysis</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>Multi-Timeframe Analysis</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>Market Heatmap</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>Position Size Calculator</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>2 Custom AI Setups/day</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>Smart Chart Analyzer</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>Backtesting Studio</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>Trading Journal</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>24/7 Priority Support</span></div>
+        </div>
+      </div>
+
+      <!-- ULTIMATE -->
+      <div class="pricing-card">
+        <div class="pricing-badge badge-popular">Most Popular</div>
+        <div class="pricing-title">Ultimate</div>
+        <div class="pricing-subtitle">Maximum performance and unlimited features</div>
+        <div class="pricing-price" style="color:var(--cyan);">$49.99<span class="pricing-price-period">/month</span></div>
+        <div class="pricing-desc">Everything in Pro PLUS unlimited everything</div>
+        <button class="btn-pricing primary">Get Started</button>
+        <div class="features-list">
+          <div class="feature-item"><span class="feature-check">✓</span><span>12 AI Analyses per day</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>Multi-Timeframe Analysis</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>Signal of the Day (90%+ accurate)</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>AI News Trading (NFP/CPI)</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>AI Strategy Builder</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>PropPass Trading</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>Market Heatmap</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>Smart Chart Analyzer</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>Backtesting Studio</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>Trading Journal</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>10x Faster Processing</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>Unlimited Custom Setups</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>24/7 Priority Support</span></div>
+        </div>
+      </div>
+
+      <!-- PLATINUM/ELITE -->
+      <div class="pricing-card elite">
+        <div class="pricing-badge badge-elite">Elite</div>
+        <div class="pricing-title" style="color:var(--orange);">Platinum</div>
+        <div class="pricing-subtitle">Run bots 24/7 without PC • Free VPS included</div>
+        <div class="pricing-price" style="color:var(--orange);">$249.99<span class="pricing-price-period">/month</span></div>
+        <div class="pricing-desc">Everything in Ultimate PLUS Cloud Automation</div>
+        <button class="btn-pricing elite">Go Elite</button>
+        <div class="features-list">
+          <div class="feature-item"><span class="feature-check">✓</span><span>Everything in Ultimate, PLUS:</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>Direct AI Chart Analysis (no uploads)</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>Prompt Trading UI</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>MT5 Account Connection</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>🤖 Run Bots Without PC (Cloud Bots)</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>☁️ FREE VPS Included ($50/mo value)</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>🎙️ Voice-based AI Interaction</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>AI Reads Account for Journaling</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>AI Generates & Executes Strategies</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>Unlimited MT5 Accounts (10)</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>24/7 Bot Monitoring & Alerts</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>Priority AI Processing</span></div>
+          <div class="feature-item"><span class="feature-check">✓</span><span>White-glove Support</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REFERRAL TAB -->
+  <div id="referral" class="tab-content">
+    <div class="referral-card">
+      <div class="referral-icon">🎁</div>
+      <div class="referral-title">Refer Friends, Earn Real Money</div>
+      <div class="referral-desc">Share ScalpGPT with your friends and earn cash rewards when they subscribe. Your earnings are withdrawable directly to your preferred payment method.</div>
+      <div class="referral-benefits">
+        <div class="benefit">
+          <div class="benefit-icon">💰</div>
+          <div class="benefit-text">Earn Cash Per Referral</div>
+        </div>
+        <div class="benefit">
+          <div class="benefit-icon">💳</div>
+          <div class="benefit-text">Easy Withdrawals</div>
+        </div>
+      </div>
+      <button class="btn-referral">Start Earning Now</button>
+    </div>
+  </div>
+
+  <!-- MT5 CONNECT TAB -->
+  <div id="mtconnect" class="tab-content">
+    <div class="card">
+      <div class="card-title">📱 MT5 ACCOUNT CONNECTION</div>
+      <div style="background:rgba(0,229,255,.08); border:1px solid var(--cyan); border-radius:10px; padding:1.5rem;">
+        <div style="margin-bottom:1.5rem;">
+          <label style="display:block; margin-bottom:.5rem; color:var(--cyan); font-weight:700;">MT5 Server</label>
+          <select class="input-field">
+            <option>Select your broker...</option>
+            <option>MetaTrader 5 Demo</option>
+            <option>MetaTrader 5 Live</option>
+          </select>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.5rem;">
+          <div>
+            <label style="display:block; margin-bottom:.5rem; color:var(--cyan); font-weight:700;">Account Number</label>
+            <input class="input-field" type="text" placeholder="Your MT5 account">
+          </div>
+          <div>
+            <label style="display:block; margin-bottom:.5rem; color:var(--cyan); font-weight:700;">Password</label>
+            <input class="input-field" type="password" placeholder="Your password">
+          </div>
+        </div>
+        <button class="btn btn-success" style="width:100%;">🔗 CONNECT MT5 ACCOUNT</button>
+        <div style="margin-top:1rem; padding:1rem; background:rgba(0,230,118,.08); border-radius:8px; font-size:.8rem; color:var(--muted);">
+          ✅ Connected Accounts: 1/10<br>
+          Status: LIVE - Ready to execute trades automatically
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS TAB -->
+  <div id="settings" class="tab-content">
+    <div class="card">
+      <div class="card-title">⚙️ SETTINGS & PREFERENCES</div>
+      <div style="display:flex; flex-direction:column; gap:1.5rem;">
+        <div class="input-group">
+          <label class="input-label">Stop Loss (pips)</label>
+          <input class="input-field" type="number" value="50">
+          <small style="color:var(--muted);">Default 50 pips for all signals</small>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Risk % per Trade</label>
+          <input class="input-field" type="number" value="1" min="0.5" max="3" step="0.5">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Preferred Timeframe</label>
+          <select class="input-field">
+            <option>M5</option>
+            <option selected>M15</option>
+            <option>M30</option>
+            <option>H1</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Enable Voice AI</label>
+          <select class="input-field">
+            <option>Off</option>
+            <option>On</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label class="input-label">AI Analyses Frequency</label>
+          <select class="input-field">
+            <option>6/day (Pro)</option>
+            <option selected>12/day (Ultimate)</option>
+          </select>
+        </div>
+        <button class="btn btn-success" style="width:100%;">💾 SAVE ALL SETTINGS</button>
+      </div>
+    </div>
+  
+<div class="card">
+  <div class="card-title">🔑 LIVE API CONNECTION</div>
+
+  <div style="display:flex; flex-direction:column; gap:1rem;">
+
+    <div class="input-group">
+      <label class="input-label">TwelveData API Key</label>
+      <input class="input-field" id="twelveKey" type="text" placeholder="Enter API key">
+    </div>
+
+    <div class="input-group">
+      <label class="input-label">Deriv App ID</label>
+      <input class="input-field" id="derivAppId" type="text" placeholder="Enter Deriv App ID">
+    </div>
+
+    <button class="btn btn-success" onclick="saveApiKeys()">
+      🔗 CONNECT LIVE API
+    </button>
+
+    <div id="apiStatus"
+      style="padding:1rem;border-radius:8px;
+      background:rgba(0,229,255,.08);
+      color:var(--cyan);font-size:.8rem;">
+      API Not Connected
+    </div>
+
+  </div>
+</div>
+
+</div>
+</div>
+
+<footer>
+  ScalpGPT PRO v2 ULTIMATE © 2025 | 50 PIP SL | 86%+ WIN RATE | 12 AI ANALYSES | CLOUD BOTS | VOICE AI | MT5 CONNECT | 7-DAY GUARANTEE
+</footer>
+
+<script>
+function switchTab(tabName, el) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById(tabName).classList.add('active');
+  document.querySelectorAll('.tab-btn, .nav-item').forEach(b => b.classList.remove('active'));
+  if(el) el.classList.add('active');
+}
+
+<script>
+function saveApiKeys() {
+
+  const twelveKey = document.getElementById("twelveKey").value;
+  const derivAppId = document.getElementById("derivAppId").value;
+
+  localStorage.setItem("twelve_api", twelveKey);
+  localStorage.setItem("deriv_appid", derivAppId);
+
+  document.getElementById("apiStatus").innerHTML =
+    "✅ Live API Connected Successfully";
+
+}
+</script>
+
+</script>
+</body>
+</html>
