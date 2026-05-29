@@ -1,0 +1,138 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  TRADER
+  ANALYST
+  ADMIN
+}
+
+enum SubscriptionTier {
+  FREE
+  PRO
+  PREMIUM
+  INSTITUTIONAL
+}
+
+enum SignalSide {
+  BUY
+  SELL
+  WAIT
+}
+
+model User {
+  id            String             @id @default(cuid())
+  email         String             @unique
+  emailVerified DateTime?
+  name          String?
+  image         String?
+  passwordHash  String?
+  role          Role               @default(TRADER)
+  subscription  SubscriptionTier   @default(FREE)
+  balance       Decimal            @default(100000)
+  accounts      Account[]
+  sessions      Session[]
+  tradingAccounts TradingAccount[]
+  alerts        AlertPreference?
+  trades        Trade[]
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model TradingAccount {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  provider     String
+  balance      Decimal
+  equity       Decimal
+  dailyPnl     Decimal  @default(0)
+  drawdown     Decimal  @default(0)
+  winRate      Decimal  @default(0)
+  profitTarget Decimal  @default(0)
+  createdAt    DateTime @default(now())
+}
+
+model Signal {
+  id          String     @id @default(cuid())
+  symbol      String
+  side        SignalSide
+  entry       Decimal
+  stopLoss    Decimal
+  takeProfit1 Decimal
+  takeProfit2 Decimal
+  takeProfit3 Decimal
+  riskReward  Decimal
+  confidence  Int
+  setup       String
+  status      String     @default("ACTIVE")
+  createdAt   DateTime   @default(now())
+  trades      Trade[]
+}
+
+model Trade {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  signalId  String?
+  signal    Signal?  @relation(fields: [signalId], references: [id])
+  symbol    String
+  side      String
+  entry     Decimal
+  exit      Decimal?
+  pnl       Decimal  @default(0)
+  outcome   String   @default("OPEN")
+  createdAt DateTime @default(now())
+}
+
+model AlertPreference {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  telegramChatId String?
+  emailEnabled   Boolean  @default(true)
+  browserEnabled Boolean  @default(true)
+  minConfidence  Int      @default(75)
+  createdAt      DateTime @default(now())
+}
