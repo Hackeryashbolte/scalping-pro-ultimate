@@ -33,6 +33,15 @@ server/ws.ts                    WebSocket market/signal broadcaster
 .env.example                    Required environment variables
 ```
 
+## Merge Conflict Resolution
+
+This branch intentionally keeps the latest dependency and auth stack after PR conflict resolution:
+
+- `nodemailer` stays on `^7.0.12`.
+- `@types/nodemailer` stays on `^7.0.3`.
+- Auth remains on the Auth.js / NextAuth v5 `handlers` route pattern.
+- Prisma keeps Auth.js `Account`, `Session`, and `VerificationToken` models plus Quantum Trade AI `TradingAccount` records.
+
 ## Installation
 
 ```bash
